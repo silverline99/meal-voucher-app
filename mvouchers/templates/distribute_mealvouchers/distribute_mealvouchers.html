@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="cz">
+    <head>
+        <meta charset="UTF-8">
+        <title>MealVoucherApp</title>
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    </head>
+    <body align="CENTER">
+        <h1>MealVoucherApp</h1>
+        <div>
+            <h2>Rozcestník</h2>
+            <a href="http://127.0.0.1:8000/add_mealvouchers/">Vložení stravenek</a><br>
+            <a href="http://127.0.0.1:8000/remove_mealvouchers/">Odstranění stravenek</a><br>
+            <a href="http://127.0.0.1:8000/add_employees/">Vložení zaměstnanců</a><br>
+            <a href="http://127.0.0.1:8000/distribute_mealvouchers/">Přidělení stravenek</a><br>
+        </div>
+        <div>
+            <h2>Uveďte měsíc za který se budou přiřazovat stravenky</h2>
+            <form method="POST" class="Zamestnanec_narok">
+                {% csrf_token %}
+                {{ input_month_code_form.as_table }}
+                <button type="submit" class="save btn btn-default">Přiřadit stravenky dle nároků</button>
+            </form>
+        </div>
+        <div>
+            <h2> PŘEHLED PRO - {{ month_to_update.mesic_vydani}}</h2>
+            Celkový počet zaměstnanců v evidenci: <b>{{total_employees.prijmeni__count}}</b> (včetně těch bez nároku)<br>
+            Celkový počet zaměstnanců bez nároku na stravenky: <b>{{ employees_without_claim }}</b><br>
+            Celkový počet zaměstnanců s nárokem na stravenky: <b>{{ employees_with_claim }}</b><br>
+            Celkový počet zaměstnanců, kterým algoritmus přidělil stravenky: <b>{{ employees_distributed_count.count}}</b><br>
+            Celková suma nároků na stravenky: <b>{{employees_claims_sum.claims_total}} Kč</b> <br>
+            Celková suma stravenek k vydání <b>{{ distribution_sum.total_sum}} Kč</b><br>
+        </div>
+        <div>
+            <h2>Přehled zaměstnanců, kterým algoritmus nepřidělil stravenky : {{ month_to_update.mesic_vydani}}</h2>
+            {% for f in claims_fullfilments_errors %}
+            {{ f.prijmeni }} {{ f.jmeno }}      NÁROK: <b>{{f.narok_v_mesici}} Kč</b> --> STRAVENKY <b>{{ f.sum_hodnota }} Kč</b><br>
+            {% endfor %}
+        </div>
+        <div>
+            <h2>Přehled všech zaměstnanců v evidenci firmy a jejich nároků na stravenky: {{ month_to_update.mesic_vydani}}</h2>
+            {% for o in employee_claims_overview %}
+            {{ o.prijmeni }} {{ o.jmeno }} <b>{{ o.narok }}</b> Kč<br>
+            {% endfor %}
+        </div>
+        <div>
+            <h2>Přehled zaměstnanců, kterým algoritmus přidělil stravenky : {{ month_to_update.mesic_vydani}}</h2>
+            {% for f in claims_fullfilments %}
+            {{ f.prijmeni }} {{ f.jmeno }}      NÁROK: <b>{{f.narok_v_mesici}} Kč</b> --> STRAVENKY <b>{{ f.sum_hodnota }} Kč</b><br>
+            {% endfor %}
+        </div>
+        <div>
+            <h2>Dílčí přehled za: {{ month_to_update.mesic_vydani}}</h2>
+            Celková suma stravenek k vydání <b>{{ distribution_sum.total_sum}}</b><br>
+            {% for c in meal_vouchers_counts %}
+            Stravenek o hodnotě <b>{{ c.hodnota }}</b> vydáváme: <b>{{ c.sum_kvantita }} ks</b> , celková hodnota= <b>{{ c.sum_suma }}</b><br>
+            {% endfor %}
+        </div>
+        <div>
+            <h2>Distribuční seznam stravenek za: {{ month_to_update.mesic_vydani}}</h2>
+            {% for d in distribution %}
+            {{ d.prijmeni }} {{ d.jmeno }} {{ d.hodnota }} Kč POČET: {{ d.sum_kvantita}}<br>
+            {% endfor %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="cz">
+    <head>
+        <meta charset="UTF-8">
+        <title>MPV PREP</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    </head>
+
+    <body align="CENTER">
+        <h1>MealVoucherApp</h1>
+        <div>
+            <h2>Rozcestník</h2>
+            <a href="http://127.0.0.1:8000/add_mealvouchers/">Vložení stravenek</a><br>
+            <a href="http://127.0.0.1:8000/remove_mealvouchers/">Odstranění stravenek</a><br>
+            <a href="http://127.0.0.1:8000/add_employees/">Vložení zaměstnanců</a><br>
+            <a href="http://127.0.0.1:8000/distribute_mealvouchers/">Přidělení stravenek</a><br>
+        </div>
+        <div>
+            <h2>Formulář pro odstranění stávajících stravenek</h2>
+            <form method="POST" class="Zamestnanec_narok">{% csrf_token %}
+                {{ remove_mealvoucher_form.as_table }}
+                <button type="submit" class="save btn btn-default">Save</button>
+            </form>
+        </div>
+        <div>
+            <h2>Přehled všech stravenek</h2>
+            {% for m in mealvouchers_warehouse %}
+            {{ m.kvantita }} kusů - s hodnotou:  {{ m.hodnota }} Kč, o celkové sumě {{ m.suma }} Kč<br>
+            {% endfor %}
+        </div>
+    </body>
+</html>
